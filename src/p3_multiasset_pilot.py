@@ -4,9 +4,15 @@ import json
 import math
 from collections import defaultdict
 from pathlib import Path
+from portfolio.corporate_actions import (
+    DividendLedger, load_events, factor_reconciles
+)
 
-ROOT = Path.home() / "FMA_Independent_Research"
+ROOT = Path(__file__).resolve().parents[1]
+SOURCE_AUDIT = Path.home() / "FMA_Independent_Research/audit"
 AUDIT = ROOT / "audit"
+AUDIT.mkdir(parents=True, exist_ok=True)
+
 BUNDLE = (
     Path.home() / "FMA_Competition/Market_Refresh_Runs"
     / "manual_full_20261031T061137Z_432cf6e9"
@@ -30,10 +36,10 @@ def rows(path):
     with path.open(newline="") as f:
         return list(csv.DictReader(f))
 
-signals_file = AUDIT / "historical_signal_candidates.csv"
+signals_file = SOURCE_AUDIT / "historical_signal_candidates.csv"
 signals = rows(signals_file)
 validation = json.loads(
-    (AUDIT / "signal_differential_summary.json").read_text()
+    (SOURCE_AUDIT / "signal_differential_summary.json").read_text()
 )
 assert validation["status"] == "PASS"
 assert len(signals) == 1229
@@ -52,6 +58,13 @@ calendar = [r["Date"] for r in spy]
 start = calendar.index("2025-09-18")
 dates = calendar[start:start + SESSIONS]
 assert len(dates) == SESSIONS
+
+EVENTS = load_events(
+    ROOT / "configs/verified_cash_dividends.json"
+)
+ledger = DividendLedger()
+dividend_accrued_total = 0.0
+dividend_cash_received_total = 0.0
 
 cache = {}
 
@@ -85,27 +98,96 @@ stop_flags = 0
 entry_gap_flags = 0
 
 for day in dates:
-    # Detect unsupported corporate actions BEFORE valuing
-    # existing holdings. No dividend or split is omitted.
-    for ticker in positions:
-        if previous_date is not None:
-            f0 = factor(ticker, previous_date)
-            f1 = factor(ticker, day)
-            if abs(f1 / f0 - 1) > 1e-6:
-                blocker = {
-                    "reason": "CORPORATE_ACTION_NOT_MODELED",
-                    "ticker": ticker,
-                    "date": day,
-                }
-                break
+    # Payment transfers a receivable to spendable cash;
+    # it does NOT create a second dividend gain.
+    paid_today = float(ledger.settle(day))
+    cash += paid_today
+    dividend_cash_received_total += paid_today
+
+    accrued_today = 0.0
+
+    def verified_factor_event(ticker):
+        if previous_date is None:
+            return None
+
+        f0 = factor(ticker, previous_date)
+        f1 = factor(ticker, day)
+
+        if abs(f1 / f0 - 1) <= 1e-6:
+            return None
+
+        event = EVENTS.get((ticker, day))
+
+        if event is None or not factor_reconciles(
+            event, f0, f1,
+            px(ticker, previous_date)
+        ):
+            raise ValueError(
+                "UNVERIFIED_CORPORATE_ACTION:"
+                + ticker + ":" + day
+            )
+
+        # An issuer's declaration must predate the
+        # decision date for historical availability.
+        if event.declared_on > previous_date:
+            raise ValueError(
+                "EVENT_INFORMATION_NOT_YET_PUBLIC:"
+                + ticker + ":" + day
+            )
+
+        return event
+
+    try:
+        # Pre-existing holdings receive ex-date dividend
+        # entitlement, before any opening buy orders fill.
+        for ticker, position in positions.items():
+            event = verified_factor_event(ticker)
+
+            if event is not None:
+                received = ledger.accrue(
+                    event, day, int(position["shares"])
+                )
+                accrued_today += float(received)
+
+                # Explicit research-only policy: adjust a
+                # pre-dividend raw stop by the cash dividend.
+                # Strategy sensitivity to this policy remains
+                # to be tested.
+                position["initial_stop"] = max(
+                    0.01,
+                    position["initial_stop"]
+                    - float(event.amount)
+                )
+
+        # Pending orders were fixed at the prior close.
+        # If their T+1 date is ex-dividend, adjust the
+        # STOP unit, not their precommitted share quantity.
+        for order in pending:
+            event = verified_factor_event(order["ticker"])
+
+            if event is not None:
+                order["stop_raw"] = max(
+                    0.01,
+                    order["stop_raw"]
+                    - float(event.amount)
+                )
+
+    except ValueError as exc:
+        blocker = {
+            "reason": str(exc),
+            "date": day,
+        }
+
     if blocker:
         break
+
+    dividend_accrued_total += accrued_today
 
     # Overnight mark: positions already owned before open.
     open_before = cash + sum(
         p["shares"] * px(ticker, day, "Open")
         for ticker, p in positions.items()
-    )
+    ) + float(ledger.outstanding())
     overnight_pnl = open_before - previous_nav
 
     fills_today = 0
@@ -159,7 +241,7 @@ for day in dates:
     open_after = cash + sum(
         p["shares"] * px(ticker, day, "Open")
         for ticker, p in positions.items()
-    )
+    ) + float(ledger.outstanding())
 
     assert math.isclose(
         open_before - open_after,
@@ -178,7 +260,7 @@ for day in dates:
     nav = cash + sum(
         p["shares"] * px(ticker, day)
         for ticker, p in positions.items()
-    )
+    ) + float(ledger.outstanding())
 
     assert math.isclose(
         nav,
@@ -317,6 +399,11 @@ for day in dates:
         "intraday_pnl": intraday_pnl,
         "execution_cost": cost_today,
         "planned_risk_fraction": used_risk / nav,
+        "dividend_accrued": accrued_today,
+        "dividend_cash_received": paid_today,
+        "dividend_receivable": float(
+            ledger.outstanding()
+        ),
     })
 
     previous_nav = nav
@@ -344,6 +431,14 @@ summary = {
     "entry_open_below_stop_flags": entry_gap_flags,
     "unmanaged_stop_flags": stop_flags,
     "corporate_action_blocker": blocker,
+    "dividend_accrued_total": dividend_accrued_total,
+    "dividend_cash_received_total": (
+        dividend_cash_received_total
+    ),
+    "dividend_receivable_at_end": float(
+        ledger.outstanding()
+    ),
+    "verified_dividend_events": len(ledger.claims),
     "daily_accounting_identity": "PASS",
     "source_signals_sha256": hashlib.sha256(
         signals_file.read_bytes()
@@ -352,7 +447,11 @@ summary = {
         "Not an FMA-strategy performance backtest.",
         "No stop, trend or profit-taking exits yet.",
         "Only MPB entries; no supplemental allocation.",
-        "No dividends, splits or partial fills.",
+        "Audited cash dividends supported; splits and"
+        " unverified dividends still blocked.",
+        "Dividend-adjusted stops are research assumptions.",
+        "Gross dividends; tax and withholding excluded.",
+        "No partial fills.",
         "MOO opening execution is hypothetical.",
         "Portfolio risk is checked for planning, not a "
         "guarantee after overnight price changes.",

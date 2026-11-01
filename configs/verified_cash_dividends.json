@@ -1,0 +1,13 @@
+[
+  {
+    "ticker": "USB",
+    "declared_on": "2025-09-09",
+    "ex_date": "2025-09-30",
+    "pay_date": "2025-10-15",
+    "amount_per_share": "0.52",
+    "currency": "USD",
+    "event_type": "CASH_DIVIDEND",
+    "source": "https://www.nasdaq.com/press-release/us-bancorp-announces-quarterly-dividends-2025-09-09",
+    "ex_date_crosscheck": "https://stockanalysis.com/stocks/usb/dividend/"
+  }
+]
