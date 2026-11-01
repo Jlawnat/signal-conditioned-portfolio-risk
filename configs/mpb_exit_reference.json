@@ -1,0 +1,18 @@
+{
+  "schema": "MPB_EXIT_REFERENCE_V1",
+  "research_only": true,
+  "profit_levels_r": [
+    3.0,
+    5.0
+  ],
+  "cumulative_profit_fractions": [
+    0.25,
+    0.5
+  ],
+  "position_trim_trigger": 0.08,
+  "position_trim_target": 0.068,
+  "source_sha256": {
+    "momentum_pullback_breakout.py": "5087335538c2670e9f6e405fab9a19a0186ee6efcae95ca4dc57c6502a268a21",
+    "config.py": "152f0d483216d255d6be5dc3281475f3df81ec1224c4e7ee45a9f1d51995e283"
+  }
+}
