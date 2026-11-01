@@ -1,0 +1,50 @@
+# Local Python environments
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Secrets and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*credentials*
+*secret*
+*token*
+
+# Research data and generated audit results
+/audit/*
+!/audit/README.md
+/data/*
+!/data/README.md
+
+# Prevent accidental historical-data publication
+*.csv
+*.parquet
+*.feather
+*.xlsx
+*.xls
+*.sqlite
+*.db
+
+# Embedded outputs may contain data or credentials
+*.ipynb
+
+# Generated outputs and temporary files
+output/
+outputs/
+reports/
+runs/
+tmp/
+*.log
+.DS_Store
+
+# Original FMA competition assets
+FMA_Competition/
+Market_Refresh_Runs/
+Account_Reconciliation/
