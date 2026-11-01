@@ -89,7 +89,7 @@ def plan_mpb_exit(
         raise ValueError("INVALID_FILL_OR_MARKET_METADATA")
 
     want = shares
-    reason = "hold_mpb_position"
+    reason = "hold_remaining_trend"
     r_multiple = None
     ema21_raw = (
         ema21_adjusted * close_raw / close_adjusted
