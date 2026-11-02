@@ -1,0 +1,75 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,graphicx}
+\usepackage[round,authoryear]{natbib}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\title{Signal-Conditioned Portfolio Risk Budgeting: Capital Deployment, Constraint Violations, and Risk--Return Trade-offs}
+\author{Anonymous research draft}
+\date{Manuscript Draft V2, 2 November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+We compare a reference momentum--pullback--breakout research integration (A), a fixed 4\% stop-gap portfolio risk overlay (B), and a volatility-conditioned 2\%--5\% overlay (C) in a previously inspected 282-session historical simulation. In the transaction-cap-neutral V5-U scenario, own-budget exceedance days are 130, 81 and 78; ending net asset values are US\$954,598.43, US\$925,904.38 and US\$941,954.60; and maximum drawdowns are 6.0091\%, 9.0257\% and 8.2399\%. The overlays reduce observed own-budget exceedance counts without improving these realized endpoints in this implementation. A bounded four-stage audit demonstrates that a reduction planned at the decision close can leave risk above target after next-open fills. Current-constituent selection, provisional dividends, hypothetical execution and incomplete order fidelity make the comparison descriptive and exploratory.
+\end{abstract}
+
+\section{Introduction}
+Portfolio constraints act on holdings created by irregular trading signals. A policy that reduces a planned exposure proxy can alter later trades, cash and costs without guaranteeing a smaller realized drawdown. The research question is how fixed and volatility-conditioned stop-gap budgets change observed exposure, deployment and the NAV path within one frozen momentum--pullback--breakout (MPB) integration. The study is a bounded case comparison rather than a search for a profitable rule. Conventional risk budgeting and volatility management provide context \citep{Roncalli2014,RichardRoncalli2019,MoreiraMuir2017}; the stop-gap proxy used here differs from variance risk contribution.
+
+\section{Literature review}
+Risk-budgeting frameworks allocate modeled portfolio risk under constraints \citep{Roncalli2014,RichardRoncalli2019}. Dynamic factor volatility scaling \citep{MoreiraMuir2017} motivates changing a budget with market conditions but does not predict this strategy's outcome. Stock and futures momentum results \citep{JegadeeshTitman1993,MoskowitzOoiPedersen2012} motivate the signal context without validating MPB entries. Trading-cost sensitivity \citep{NovyMarxVelikov2016}, survivorship bias \citep{BrownGoetzmannIbbotsonRoss1992} and backtest overfitting \citep{BaileyBorweinLopezZhu2017} motivate conservative inference from the inspected window. The present contribution is a documented implementation comparison; no new optimal allocation theory is claimed.
+
+\section{Data and methodology}
+The study covers 18 September 2025 to 30 October 2026, 282 sessions, with US\$1 million initial capital. The universe retrospectively uses current S\&P 500 constituents. Decisions use T-close data and hypothetical adverse 5 basis-point slippage and US\$10 commission at the next open. The transaction-cap-neutral V5-U comparison is primary; V4 uses a contest-derived planning threshold and is reported separately.
+
+For adjusted stock and SPY closes, the frozen reference computes momentum and relative strength over $n\in\{21,63,126\}$ sessions:
+\begin{align}
+M_{i,t}^{(n)} &= P^a_{i,t}/P^a_{i,t-n}-1,\\
+RS_{i,t}^{(n)} &= M_{i,t}^{(n)}-(P^a_{m,t}/P^a_{m,t-n}-1),\\
+\mathrm{score}_{i,t} &= 0.25(M^{(21)}+RS^{(21)})+0.35(M^{(63)}+RS^{(63)})+0.40(M^{(126)}+RS^{(126)}).
+\end{align}
+Upward EMA trend, positive medium and long momentum and relative strength, liquidity, price, stop distance and breakout or pullback qualification filter candidates. The precomputed eligible list is ranked by score and ticker. Three full-universe sampled dates match frozen reference qualification, rank, score, setup and stop; later held-portfolio order parity remains incomplete.
+
+With raw close $P_{i,t}$, dividend-adjusted raw initial stop $S_{i,t}$, integer shares $q_{i,t}$ and portfolio net asset value $NAV_t$, end-of-day stop-gap exposure is
+\begin{equation}
+R_t=\frac{\sum_i q_{i,t}\{\max(0,P_{i,t}-S_{i,t})+0.01P_{i,t}\}}{NAV_t}.
+\end{equation}
+A uses a 4\% new-order risk-planning limit without additional incumbent trims. B plans next-open integer reductions after MPB exits toward $b_t=0.04$. C applies the same trim with
+\begin{equation}
+b_t=0.04\operatorname{clip}\!\left(\frac{\sigma_{\mathrm{ref}}}{\sigma_{20,t}},0.5,1.25\right),\qquad 0.02\le b_t\le0.05,
+\end{equation}
+where $\sigma_{20,t}$ is annualized sample volatility of the latest 20 adjusted SPY returns and $\sigma_{\mathrm{ref}}$ is the median such volatility from 2 January to 29 August 2025. The stored reference value is $0.14485424053056145$. The planned stop-gap proxy is not value at risk, expected shortfall or realized drawdown. Letting $C_t$ denote cash and $D_t$ receivables, invested fraction and realized drawdown are
+\begin{equation}
+I_t=\frac{NAV_t-C_t-D_t}{NAV_t},\qquad DD_t=1-\frac{NAV_t}{\max(NAV_0,\ldots,NAV_t)}.
+\end{equation}
+The outcome hierarchy was proposed after the sample was inspected. Deployment level does not identify deployment efficiency.
+
+\section{Empirical results}
+\begin{table}[ht]
+\centering
+\caption{V5-U simulated outcomes, 282 sessions; NAV includes provisional dividend receivables.}
+\label{tab:main}
+\begin{tabular}{lrrrrrr}
+\toprule
+Policy & Final NAV (US\$) & Return (\%) & Max DD (\%) & Mean invested (\%) & Fills & Cost (US\$)\\
+\midrule
+A & 954,598.43 & -4.5402 & 6.0091 & 33.2569 & 313 & 9,491.45\\
+B & 925,904.38 & -7.4096 & 9.0257 & 34.5098 & 464 & 12,675.68\\
+C & 941,954.60 & -5.8045 & 8.2399 & 37.6113 & 478 & 13,336.02\\
+\bottomrule
+\end{tabular}
+\end{table}
+Own-budget exceedance days are 130, 81 and 78 for A/B/C. Against a common 4\% reference they are 130, 81 and 165, since C's own target can exceed 4\%. In a selected B transition on 23 October 2025, risk is 5.3795\% at T close, 3.9972\% after hypothetical T-price reductions, 4.3026\% at the filled next open, and 4.1652\% at the following close. The selected timing result does not classify all exceedances. Curated USB/CAT dividend accrual is US\$404.63/490.70/489.19 across A/B/C; provisional unpaid endpoint receivables are US\$7,164.50/8,396.79/7,525.24. Removing only that endpoint component leaves the arithmetic NAV ranking A $>$ C $>$ B, without constituting a new portfolio path. V4 contest-capped outputs are a distinct sensitivity and must not be combined with Table~\ref{tab:main}.
+
+\section{Discussion}
+Lower average stop-gap exposure and fewer own-budget exceedance days need not imply lower realized drawdown. Planned trims alter holdings only after execution, while prices and volatility-conditioned targets can move in the interim. B/C also generate more modeled fills and costs. The stored paths establish these co-occurrences but do not isolate a causal mechanism for the NAV differences. Candidate availability and cash share are observable; optimal capital deployment is not identified. The paired daily dates are serially dependent and do not provide 282 independent replications.
+
+\section{Limitations}
+The universe uses current rather than point-in-time constituents. The 282-session interval had already been inspected; there is no untouched out-of-sample test. Dividends include provider-only provisional receivables, and ex-date stop changes are modeled assumptions. Fills are hypothetical; real market impact and partial fills are absent. The bounded three-date candidate and initial flat-account checks do not certify every reference order. The outcome hierarchy is post-hoc, overlapping forward returns are dependent, and no statistical significance or future-profitability claim follows. StockTrak account outcomes are separate from the MPB-only simulation.
+
+\section{Conclusion}
+In this inspected historical implementation, the overlays have fewer own-budget exceedance days alongside worse terminal NAV and maximum drawdown than A. The descriptive record motivates reporting planned stop-gap exposure, executed constraint states, deployment, costs and realized NAV together. Stronger performance claims require full order fidelity, verified corporate actions, point-in-time membership and a genuinely new confirmation period.
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+\end{document}

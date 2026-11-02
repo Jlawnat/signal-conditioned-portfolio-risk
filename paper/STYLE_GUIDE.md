@@ -1,0 +1,9 @@
+# Manuscript presentation specification
+
+- Use a standard single-column academic article draft until a target journal is chosen. Recommended LaTeX body is 11 pt with readable serif text, 1.2–1.4 line spacing and conventional margins. No journal-specific template is assumed.
+- Number sections 1–7 after the abstract; use stable figure and table numbers from the generated inventory. Table captions go above tables; figure captions go below figures. A caption states V5-U or V4, 282 sessions, units, and any truncated axis. Renumber supporting figures at journal-layout stage if required by the target venue.
+- Use A (blue), B (orange), C (purple) consistently, with line styles as a second channel. State whether a dashed line means own budget or common 4% reference. Use readable labels and avoid color-only interpretation.
+- Define `NAV_t`, end-of-day stop-gap risk `R_t`, budget `b_t`, invested fraction `I_t`, and realized drawdown `D_t` before using them. Use percentages for reported magnitudes and percentage points for differences. Do not call `R_t` VaR or realized loss.
+- Report NAV to cents; return, drawdown, mean exposure and cost as stored; avoid extra digits in narrative. Counts are integers. Use `−` for negative values and distinguish dollar values from percentage values.
+- Use author–year citations in prose and `paper/references.bib` keys in a future LaTeX conversion. Only verified primary-source links appear in Draft V1. Label arXiv/author manuscripts as preprints or unverified publication status.
+- Organize future LaTeX as `main.tex`, `sections/`, `figures/`, `tables/`, `references.bib`, with `booktabs` for tables and vector SVG-to-PDF conversion when a LaTeX toolchain is available. `pdflatex`/`latexmk` were not found in this environment, so Markdown is the authoritative Draft V1 source.

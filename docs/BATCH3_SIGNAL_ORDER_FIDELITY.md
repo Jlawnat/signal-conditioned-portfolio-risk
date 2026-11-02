@@ -1,0 +1,20 @@
+# Batch 3 bounded signal and order fidelity audit
+
+Executed 2026-11-02. The frozen FMA source and all historical outputs were read only. `scripts/paper/batch3_fidelity.py` independently calls frozen `rankings()` over the 503 stocks in the stored current-universe lineage on three dates chosen to cover the opening session, a high-candidate day, and the endpoint. It compares the resulting eligible ticker list, exact rank order, score, setup and adjusted stop with the precomputed candidate CSV. The script checks both frozen source hashes before comparison and writes only `paper/tables/v2/fidelity_differential.json`.
+
+| Check | Coverage and result | Status |
+|---|---|---|
+| Frozen source identity | Two SHA-256 hashes equal `configs/mpb_exit_reference.json`. | PASS |
+| Feature qualification and ranking | 503 current-universe stocks × 3 dates. Eligible counts 9, 40, 21 in both reference and CSV; no ticker, rank, score, setup or adjusted-stop differences (maximum absolute score and stop difference both 0.0). | PASS for sampled dates; PARTIAL full history |
+| Flat first-session reference decision | With $1m cash and no holdings, frozen reference targets eight buys. V5-U A's next-open fills have the same tickers and quantities: CHRW 331, TEL 313, CMI 115, CFG 1,231, LDOS 317, NTRS 539, AXP 190, USB 752. | PASS for one comparable state; PARTIAL historical orders |
+| Historical signal differential | Existing external audit reports 4,874 feature comparisons, including 1,229 reported positives, sampled negatives, seven full dates, zero mismatches. This was inspected, not rerun here. | PARTIAL |
+| Managed-position exits | Existing persistent test covers 17 fixed and 391 seeded randomized cases, 408/408 target-share/reason matches. | PASS for tested core; PARTIAL system |
+| Position sizing and limits | Formula inspection shows the same 0.5% position-risk, 4% A new-risk cap, name/sector/volume/cash limits and integer sizing at the sampled flat state. | PARTIAL |
+| T+1 fill accounting | Stored independent A/B/C accounting replays and current code show next-open fills, 5 bps adverse slippage, $10 per fill, no same-opening sell financing. | PASS for modeled executor; NOT_TESTED as real fill model |
+| Full reference order path | No replay of every state, candidate rejection, target, order and pending queue. | NOT_TESTED |
+
+The first initial attempt used every adjusted panel (528 non-SPY symbols) and therefore admitted QQQ and XLE, which are support ETFs outside the 503-stock research universe. Restricting the test to `universe_lineage.csv` removed both, with exact candidate sets on all three sampled dates. This is a **universe-definition difference in the audit setup**, not evidence of a V5-U candidate defect.
+
+The independent planner is not an exact transcription of frozen `decision()` and `generate_orders()`. Frozen `decision()` credits planned exits in projected risk and cash and its order sequencer can pair sells and buys. V5-U retains incumbent risk in its new-buy projection until fills and expressly prohibits financing buys from same-opening sell proceeds. V5-U B/C also add trims outside the frozen decision. These choices can change later candidate acceptance and portfolio paths; the first flat-state match does not validate later states. The precomputed CSV's complete generation lineage and point-in-time universe membership remain unverified. No historical output has been corrected or replaced. **Full FMA order fidelity is unresolved and blocks a literal reference-replay claim.**
+
+Sources inspected: frozen `momentum_pullback_breakout.py`, `execution.py`, `config.py`; `scripts/run_mpb_lifecycle_v5u.py`; `src/portfolio/exit_policy.py`; `src/portfolio/risk_budget.py`; candidate CSV and universe lineage under local independent research; V5-U A trades. To upgrade this result, retain per-date candidate rejections and pending orders and run a predeclared state differential across representative held portfolios, then an integrated replay only if a material defect requires it.

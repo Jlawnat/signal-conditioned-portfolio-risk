@@ -1,0 +1,5 @@
+## 7. Conclusion
+
+This study documents how three specified risk-budget policies behaved in one previously inspected, 282-session historical simulation. In the V5-U cap-neutral setting, the fixed and dynamic overlays had fewer end-of-day own-budget exceedances than the baseline, while both had lower terminal NAV and larger realized maximum drawdown. The result illustrates the need to report planned exposure, observed constraint conditions, capital deployment, costs and realized NAV together. It does not establish a general trade-off, a statistically significant effect or an investable return advantage.
+
+The first manuscript can proceed as a transparent exploratory account. Before a submission-ready claim about strategy performance, the research needs bounded full signal/order fidelity checks, corporate-action and dividend resolution, constraint-timing attribution, and a reproducibility manifest. A point-in-time universe or genuinely untouched future period would be required to address external validity more directly. The original frozen FMA strategy and historical outputs remain the reference record.

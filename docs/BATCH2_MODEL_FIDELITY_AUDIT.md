@@ -1,0 +1,19 @@
+# Batch 2 bounded model-fidelity audit
+
+Review date: 2026-11-02. Reference: read-only frozen FMA at `~/FMA_Competition/fma_mpb_v41_20261013/fma_mpb_v41`. This review compares implemented components and existing evidence; it does not run a 282-session simulation.
+
+| Component | Evidence inspected or executed | Classification | Manuscript implication |
+|---|---|---|---|
+| Frozen source identity | `scripts/verify_paper_evidence.py` checked source/config SHA-256 against `configs/mpb_exit_reference.json`. | PASS | Reference version identified. |
+| Signal technical features | V5-U calls frozen `reference.signal_features()` on adjusted stock and SPY panels truncated to T; code inspection of `scripts/run_mpb_lifecycle_v5u.py`. | PASS for direct call; PARTIAL end-to-end | The feature function is shared, but candidate generation and panel provenance are separate. |
+| Momentum, relative strength, pullback and breakout qualification | The stored external `signal_differential_summary.json` reports 4,874 comparisons: all 1,229 reported positives, sampled negatives and seven full dates. No new full-window comparison run. | PARTIAL | Do not state exhaustive historical signal parity. |
+| Ranking and candidate filtering | V5-U sorts precomputed candidates by descending score and ticker. Frozen FMA performs its own `rankings()` and `decision()` filtering. No order-by-order differential was found. | NOT_TESTED | Selected entries may differ from a full frozen replay. |
+| Look-ahead control | Feature panels are cut at T; C uses trailing SPY data and a pre-window reference median; volume uses preceding 20 raw sessions. The candidate CSV generation lineage is external. | PARTIAL | No observed future-price use in inspected runner, but complete lineage is not certified. |
+| Position sizing, stops and cash | V5-U uses frozen risk/position/sector constants, adjusted-stop conversion, integer shares, prior volume, projected cash and no same-opening sell financing. It implements this planner independently of frozen `decision()`. | PARTIAL | Formula inspection is not full order parity. |
+| Pending orders and T+1 fills | Orders carry signal date; fills use next open, adverse 5 bps and $10/fill. Three independent accounting replays report T+1 and same-auction cash guards PASS. | PASS for modeled timing/accounting | Execution is hypothetical. |
+| Exit priorities, 3R/5R profit taking and concentration trim | New `tests/test_exit_reference_parity.py`: 17 fixed boundaries plus 391 seeded randomized managed-position cases, 408/408 target shares and reasons matched frozen `decision()`. Frozen ranking/features/order generation stubbed in this test. | PASS for tested exit core; PARTIAL system | Neither full historical exits nor order scheduling certified. |
+| Risk overlay | `src/portfolio/risk_budget.py`, three focused tests, and V5-U audit. B/C trims are planned after MPB sells for T+1; reductions are not immediate fills. | PASS for inspected formula; PARTIAL compliance | Residual end-of-day breaches exist. |
+| Transaction-cap handling | V4 planning threshold 360; V5-U nonbinding 1 billion. V4 B/C have 370/373 fills, so 360 is not a strict realized-fill cap. | PASS for code distinction; PARTIAL intended contest fidelity | Keep regimes separate. |
+| Full reference signal/order parity | No integrated side-by-side output, especially ranked candidates, rejections and quantities. | NOT_TESTED | Blocks a claim that the independent run faithfully reproduces all original FMA decisions. |
+
+The 408-case regression is new and persistent. It reproduces the *count* of the earlier reported interactive comparison with a newly documented fixed/seeded fixture set; it is not evidence that the original interactive cases were identical. No historical result or frozen source was modified. A first manuscript can report the numerical comparison as a conditional research simulation; full strategy fidelity remains unresolved.
