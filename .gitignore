@@ -22,6 +22,7 @@ __pycache__/
 !/audit/README.md
 /data/*
 !/data/README.md
+/restricted_norgate/
 
 # Prevent accidental historical-data publication
 *.csv

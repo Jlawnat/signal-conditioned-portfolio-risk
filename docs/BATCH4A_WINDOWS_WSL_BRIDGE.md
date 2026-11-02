@@ -1,0 +1,7 @@
+# Batch 4A Windows–WSL bridge
+
+The repository is in WSL; Norgate Data Updater and the `norgatedata` package are installed on Windows. On 2026-11-02, WSL found `powershell.exe` and `python.exe`. A read-only Windows Python import succeeded with package 1.0.77. The API probe confirmed the four adjustment enum values, `PaddingType.NONE`, the price/membership/capital-event call signatures, and their Pandas columns. An unprivileged interop call failed with a WSL vsock error; the permitted direct Windows Python call worked. No new Norgate installation or database was created.
+
+Run the versioned extraction and validation commands in [the pipeline README](../scripts/norgate/README.md). `wslpath -w` converts repository paths for Windows Python. A sample extraction succeeded after changing SQLite writes to a Windows-local temporary file and copying the closed result to the ignored WSL directory. The early probe `sample_20261102.sqlite` and `sample_v2_20261102.sqlite` are empty or error-only failed attempts in that directory; they contain no licensed rows. They are listed for manual cleanup, not deleted automatically.
+
+The bridge is local and read-only against Norgate. Extraction writes only its versioned private output; it neither changes the updater nor any historical portfolio file. If interop stops working, use the PowerShell command in the README. Do not spend a research batch debugging alternative networking paths.
