@@ -1,0 +1,123 @@
+{
+  "A": [
+    {
+      "date": "2025-10-23",
+      "budget_pct": 4.0,
+      "close_before_plan_risk_pct": 5.264535579782368,
+      "hypothetical_close_after_next_day_executed_sells_pct": 5.264535579782368,
+      "next_date": "2025-10-24",
+      "next_open_sell_count": 0,
+      "next_open_sell_reasons": [],
+      "next_close_risk_pct": 5.280345275184982,
+      "next_open_after_actual_fills_risk_pct": 5.5785219365946555
+    },
+    {
+      "date": "2025-10-24",
+      "budget_pct": 4.0,
+      "close_before_plan_risk_pct": 5.280345275184982,
+      "hypothetical_close_after_next_day_executed_sells_pct": 5.280345275184982,
+      "next_date": "2025-10-27",
+      "next_open_sell_count": 0,
+      "next_open_sell_reasons": [],
+      "next_close_risk_pct": 4.9818926137437165,
+      "next_open_after_actual_fills_risk_pct": 5.478968750299999
+    },
+    {
+      "date": "2026-06-12",
+      "budget_pct": 4.0,
+      "close_before_plan_risk_pct": 5.383350311744233,
+      "hypothetical_close_after_next_day_executed_sells_pct": 5.383350311744233,
+      "next_date": "2026-06-15",
+      "next_open_sell_count": 0,
+      "next_open_sell_reasons": [],
+      "next_close_risk_pct": 5.080841585932679,
+      "next_open_after_actual_fills_risk_pct": 5.527421896520927
+    }
+  ],
+  "B": [
+    {
+      "date": "2025-10-23",
+      "budget_pct": 4.0,
+      "close_before_plan_risk_pct": 5.379537701466214,
+      "hypothetical_close_after_next_day_executed_sells_pct": 3.9971574820125277,
+      "next_date": "2025-10-24",
+      "next_open_sell_count": 1,
+      "next_open_sell_reasons": [
+        "risk_budget_overlay"
+      ],
+      "next_close_risk_pct": 4.165210031099383,
+      "next_open_after_actual_fills_risk_pct": 4.302596530623202
+    },
+    {
+      "date": "2026-01-05",
+      "budget_pct": 4.0,
+      "close_before_plan_risk_pct": 4.818773498008303,
+      "hypothetical_close_after_next_day_executed_sells_pct": 3.999766684373185,
+      "next_date": "2026-01-06",
+      "next_open_sell_count": 2,
+      "next_open_sell_reasons": [
+        "risk_budget_overlay",
+        "risk_budget_overlay"
+      ],
+      "next_close_risk_pct": 3.668745226425916,
+      "next_open_after_actual_fills_risk_pct": 3.5553780048555725
+    },
+    {
+      "date": "2026-06-04",
+      "budget_pct": 4.0,
+      "close_before_plan_risk_pct": 4.951516889867155,
+      "hypothetical_close_after_next_day_executed_sells_pct": 3.99882746982599,
+      "next_date": "2026-06-05",
+      "next_open_sell_count": 2,
+      "next_open_sell_reasons": [
+        "risk_budget_overlay",
+        "risk_budget_overlay"
+      ],
+      "next_close_risk_pct": 4.0040805719694745,
+      "next_open_after_actual_fills_risk_pct": 4.009999101945746
+    }
+  ],
+  "C": [
+    {
+      "date": "2025-10-23",
+      "budget_pct": 4.327243711856469,
+      "close_before_plan_risk_pct": 5.681656341726292,
+      "hypothetical_close_after_next_day_executed_sells_pct": 4.323725781609868,
+      "next_date": "2025-10-24",
+      "next_open_sell_count": 1,
+      "next_open_sell_reasons": [
+        "risk_budget_overlay"
+      ],
+      "next_close_risk_pct": 4.511616098427349,
+      "next_open_after_actual_fills_risk_pct": 4.70799271852699
+    },
+    {
+      "date": "2026-01-05",
+      "budget_pct": 5.0,
+      "close_before_plan_risk_pct": 6.291495433063233,
+      "hypothetical_close_after_next_day_executed_sells_pct": 4.9987236923339236,
+      "next_date": "2026-01-06",
+      "next_open_sell_count": 2,
+      "next_open_sell_reasons": [
+        "risk_budget_overlay",
+        "risk_budget_overlay"
+      ],
+      "next_close_risk_pct": 4.792622709608819,
+      "next_open_after_actual_fills_risk_pct": 4.578372870246718
+    },
+    {
+      "date": "2026-06-04",
+      "budget_pct": 5.0,
+      "close_before_plan_risk_pct": 6.251967200906296,
+      "hypothetical_close_after_next_day_executed_sells_pct": 4.998719219467952,
+      "next_date": "2026-06-05",
+      "next_open_sell_count": 2,
+      "next_open_sell_reasons": [
+        "risk_budget_overlay",
+        "risk_budget_overlay"
+      ],
+      "next_close_risk_pct": 4.725367503631055,
+      "next_open_after_actual_fills_risk_pct": 4.944493577387987
+    }
+  ]
+}

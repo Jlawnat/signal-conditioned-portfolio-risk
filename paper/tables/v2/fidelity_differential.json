@@ -1,0 +1,74 @@
+{
+  "dates": [
+    {
+      "date": "2025-09-18",
+      "universe_tickers": 503,
+      "reference_count": 9,
+      "stored_count": 9,
+      "reference_only": [],
+      "stored_only": [],
+      "rank_order_equal": true,
+      "maximum_common_score_abs_difference": 0.0,
+      "maximum_common_stop_abs_difference": 0.0,
+      "setup_mismatch": []
+    },
+    {
+      "date": "2026-01-05",
+      "universe_tickers": 503,
+      "reference_count": 40,
+      "stored_count": 40,
+      "reference_only": [],
+      "stored_only": [],
+      "rank_order_equal": true,
+      "maximum_common_score_abs_difference": 0.0,
+      "maximum_common_stop_abs_difference": 0.0,
+      "setup_mismatch": []
+    },
+    {
+      "date": "2026-10-30",
+      "universe_tickers": 503,
+      "reference_count": 21,
+      "stored_count": 21,
+      "reference_only": [],
+      "stored_only": [],
+      "rank_order_equal": true,
+      "maximum_common_score_abs_difference": 0.0,
+      "maximum_common_stop_abs_difference": 0.0,
+      "setup_mismatch": []
+    }
+  ],
+  "flat_first_day": {
+    "reference_target_shares": {
+      "CHRW": 331,
+      "TEL": 313,
+      "CMI": 115,
+      "CFG": 1231,
+      "LDOS": 317,
+      "NTRS": 539,
+      "AXP": 190,
+      "USB": 752
+    },
+    "reference_order_tickers": [
+      "NTRS",
+      "TEL",
+      "CFG",
+      "AXP",
+      "LDOS",
+      "CMI",
+      "CHRW",
+      "USB"
+    ],
+    "v5u_next_open_filled_shares": {
+      "CHRW": 331,
+      "TEL": 313,
+      "CMI": 115,
+      "CFG": 1231,
+      "LDOS": 317,
+      "NTRS": 539,
+      "AXP": 190,
+      "USB": 752
+    },
+    "reference_strategy_issues": [],
+    "comparison_note": "Reference close targets versus V5-U next-open fills; quantity difference may include execution guards."
+  }
+}

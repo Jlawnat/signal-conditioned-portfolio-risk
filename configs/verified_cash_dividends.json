@@ -9,5 +9,16 @@
     "event_type": "CASH_DIVIDEND",
     "source": "https://www.nasdaq.com/press-release/us-bancorp-announces-quarterly-dividends-2025-09-09",
     "ex_date_crosscheck": "https://stockanalysis.com/stocks/usb/dividend/"
+  },
+  {
+    "ticker": "CAT",
+    "declared_on": "2025-10-06",
+    "ex_date": "2025-10-20",
+    "pay_date": "2025-11-20",
+    "amount_per_share": "1.51",
+    "currency": "USD",
+    "event_type": "CASH_DIVIDEND",
+    "source": "https://investors.caterpillar.com/news/news-details/2025/Caterpillar-Inc--Maintains-Dividend-e001613a2/default.aspx",
+    "ex_date_crosscheck": "https://investors.caterpillar.com/stock-info/dividend-history/default.aspx"
   }
 ]

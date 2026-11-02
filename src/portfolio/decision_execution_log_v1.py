@@ -149,7 +149,7 @@ def reconcile_directory(directory):
 
     order_rows = rows("orders")
     snapshots = rows("snapshots")
-    accepted, terminal, proposed = {}, {}, set()
+    accepted, terminal, proposed, adjusted = {}, {}, set(), {}
     issues = []
     for row in order_rows:
         oid, state = row["order_id"], row["order_state"]
@@ -159,6 +159,8 @@ def reconcile_directory(directory):
             if oid in accepted:
                 issues.append("DUPLICATE_ACCEPTED:" + oid)
             accepted[oid] = row
+        elif state == "ADJUSTED_FOR_VERIFIED_SPLIT":
+            adjusted[oid] = row.get("adjusted_shares")
         elif state in TERMINAL:
             if oid in terminal:
                 issues.append("DUPLICATE_TERMINAL:" + oid)
@@ -172,8 +174,9 @@ def reconcile_directory(directory):
         end = terminal.get(oid)
         if end is None:
             continue
+        expected_fill = adjusted.get(oid, row["accepted_planned_shares"])
         if end["order_state"] == "FILLED" and (
-            end.get("filled_shares") != row["accepted_planned_shares"]
+            end.get("filled_shares") != expected_fill
         ):
             issues.append("FILL_QUANTITY_MISMATCH:" + oid)
         if end["order_state"] == "REJECTED" and end.get("filled_shares", 0) != 0:

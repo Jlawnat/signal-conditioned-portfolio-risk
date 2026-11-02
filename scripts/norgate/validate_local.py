@@ -128,8 +128,10 @@ def validate(db_path, calendar_path):
             issues.append("membership_missing_on_study_dates")
         if max(missing_member_price, default=0):
             issues.append("member_without_price")
-        if insufficient_lookback:
-            issues.append("insufficient_126_prior_prices")
+        # Batch4A.7: membership and signal qualification are different states.
+        # Keep the diagnostic; never invent pre-listing bars or remove PIT members.
+        signal_constraints = (["PIT_eligible_but_no_126_prior_signal"]
+                              if insufficient_lookback else [])
         spy = next((asset for asset, row in securities.items() if row["symbol"] == "SPY"), None)
         spy_dates = {d for d in asset_dates.get(spy, []) if START <= d <= END}
         if spy_dates != set(calendar):
@@ -185,6 +187,10 @@ def validate(db_path, calendar_path):
         delisted_statuses = Counter(str(securities[a]["status"]) for a in candidates)
         result = {
             "status": "FAIL" if issues else "PASS", "issues": issues,
+            "validation_scope": "STRUCTURAL_DATA_CHECKS_ONLY_NOT_4B_CLEARANCE",
+            "signal_constraints": signal_constraints,
+            "signal_feature_requirement": "Frozen feature function requires 270 aligned bars including decision day; 126 prior alone is insufficient",
+            "ready_for_4b": False,
             "study_sessions": len(calendar), "study_start": calendar[0] if calendar else None,
             "study_end": calendar[-1] if calendar else None,
             "candidate_securities": len(candidates), "identified_securities": len(securities),
