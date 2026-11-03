@@ -1,0 +1,16 @@
+# Manuscript V4 figure and table inventory
+
+All figures are vector SVGs and all tables state units and denominators. The linked source files are restricted internal artifacts; public release requires licensing and disclosure review. Numbering follows the V4 draft and should remain stable until journal layout is chosen.
+
+| Item | Manuscript location and purpose | Source artifact | Units and denominator | Release/layout check |
+|:--|:--|:--|:--|:--|
+| Table 1 | §6.1, official closing outcomes | [Batch 4B policy summary](../restricted_norgate/batch4b_official_20261102/policy_summary.csv), [summary](../restricted_norgate/batch4b_official_20261102/summary.json) | Positive excess is exposure fraction; invested fraction and returns are percentages; exceedance days out of 230 closes; NAV is USD. | Confirm table width and decimal precision for target journal. |
+| Table 2 | §6.2, planned-to-opening risk gaps | [Batch 4C.1 distributions](../restricted_norgate/batch4c1_implementation_gap/distributions.csv), [strata](../restricted_norgate/batch4c1_implementation_gap/strata.csv) | Gap means are exposure basis points of NAV; crossing counts use 229 pairs and policy-specific compliant-plan denominators. | Keep A's common-reference-only qualification in caption. |
+| Table 3 | §7.1, composition and trading | [Batch 4C.2 policy aggregate](../restricted_norgate/batch4c2_capital_deployment/policy_aggregate.csv), [Batch 4C.3 policy summary](../restricted_norgate/batch4c3_economic_mechanisms/policy_summary.csv) | Holdings over 230 closes; top weight/HHI and \(Q\) exclude initial all-cash close; costs USD. | Do not label lower HHI as diversification benefit. |
+| Figure 1 | §6.1, official modeled NAV paths | [Official Batch 4B SVG](../restricted_norgate/batch4b_official_20261102/nav_paths.svg) | USD NAV over 230 closes. | Add panel lettering and accessible line-style redundancy in journal typesetting; licensing review. |
+| Figure 2 | §6.2, S4−S2 signed-gap distribution | [Batch 4C.1 SVG](../restricted_norgate/batch4c1_implementation_gap/figure_gap_distribution.svg) | Exposure basis points of NAV; 229 pairs per policy. | Confirm all extreme values are within plotted axis; vector source retained. |
+| Figure 3 | §7.1, exact B−A decomposition | [Batch 4C.3 SVG](../restricted_norgate/batch4c3_economic_mechanisms/figure_exact_decomposition.svg) | Exposure basis points of NAV per matched close, 230 dates. | Explain first all-cash zero-component convention in caption or adjacent text. |
+| Figure 4 | §7.1, deployment paths | [Batch 4C.2 SVG](../restricted_norgate/batch4c2_capital_deployment/figure_deployment_paths.svg) | Invested assets / same-day NAV, 230 closes. | Supply line styles in monochrome proof; private data review. |
+| Figure 5 | §8, monthly primary contributions | [Batch 4C.4 SVG](../restricted_norgate/batch4c4_robustness/figure_monthly_contributions.svg) | Monthly sum / all 230 closes, exposure basis points of NAV. | Retain note that month exclusions are exploratory. |
+
+The figures are incorporated by links in the authoritative Markdown draft. A future LaTeX layout may convert verified SVGs to PDF without recomputing underlying data. Do not copy restricted source tables or security-level plots into a public release without licensing review.
